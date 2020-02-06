@@ -4,13 +4,71 @@
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js'></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="public/style.css" type="text/css">
+    </style>
   </head>
   <body>
-    <h1>My React App</h1>
-    <div id='root'></div>
-    <script type='text/babel'>
+    <div class="container">
+      <h1 class="head">My React App</h1>
+      <div id='root'></div>
+      <script type='text/babel'>
+        const {useEffect, useState} = React
+        
+        const App = () => {
+          const [products, setProducts] = useState([])
+          const [companies, setCompanies] = useState([])
 
-      ReactDOM.render(<hr />, document.querySelector('#root'));
-    </script>
+          useEffect(() => {
+            axios.get('/api/products')
+              .then(response => setProducts(response.data))
+            axios.get('/api/companies')
+              .then(response => setCompanies(response.data))
+          }, [])
+
+          return(
+            <div className="app">
+              <div className="container">
+                <h1>Products</h1>
+                <ul className="products">
+                  {
+                    products.map((product) => {
+                      return(
+                        <li key={product.id}>
+                          <div className="data product">
+                            <h2>{product.name}</h2>
+                            <p>{product.description}</p>
+                            <h4>${product.suggestedPrice}.00</h4>
+                          </div>
+                        </li>
+                      )
+                    })
+                  }
+                </ul>
+                <h1>Companies</h1>
+                <ul className="companies">
+                  {
+                    companies.map((company) => {
+                      return(
+                        <li key={company.id}>
+                          <div className="data company">
+                            <h2>{company.name}</h2>
+                            <p>{company.catchPhrase}</p>
+                            <h4>{company.phone}</h4>
+                            <h4>{company.state}</h4>
+                          </div>
+                        </li>
+                      )
+                    })
+                  }
+                </ul>
+              </div>
+            </div>
+          )
+        }
+
+        ReactDOM.render(<App />, document.querySelector('#root'));
+      </script>
+    </div>
   </body>
 </html>
